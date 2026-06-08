@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Quiz sobre o Futuro</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #101936, #243b73);
+      margin: 0;
+      padding: 0;
+      color: white;
+    }
+
+    .container {
+      max-width: 850px;
+      margin: 35px auto;
+      background: rgba(255, 255, 255, 0.10);
+      padding: 30px;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    input, button {
+      padding: 12px;
+      border-radius: 8px;
+      border: none;
+      font-size: 16px;
+    }
+
+    input {
+      width: calc(100% - 24px);
+      margin: 10px 0 20px 0;
+    }
+
+    .blocos {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .bloco-btn {
+      background: #00c2ff;
+      color: #06111f;
+      font-weight: bold;
+      cursor: pointer;
+      min-height: 58px;
+    }
+
+    .bloco-btn:hover {
+      background: #66ddff;
+    }
+
+    .alternativa {
+      display: block;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .alternativa:hover {
+      background: rgba(255, 255, 255, 0.25);
+    }
+
+    .botao-proximo, .botao-voltar {
+      width: 100%;
+      background: #00c2ff;
+      color: #06111f;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+
+    .barra {
+      width: 100%;
+      height: 18px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 20px;
+      overflow: hidden;
+      margin: 15px 0;
+    }
+
+    .progressoBarra {
+      height: 100%;
+      width: 0%;
+      background: #00c2ff;
+    }
+
+    #progresso {
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .resultado-caixa {
+      text-align: center;
+      font-size: 20px;
+    }
+
+    .pequeno {
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: rgba(255,255,255,0.12);
+    }
+
+    th, td {
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 8px;
+      font-size: 14px;
+    }
+
+    th {
+      background: rgba(0,194,255,0.35);
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        margin: 10px;
+        padding: 20px;
+      }
+
+      .blocos {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Quiz sobre o Futuro</h1>
+    <p class="pequeno">Digite seu nome e escolha um bloco para responder 10 perguntas.</p>
+
+    <div id="inicio">
+      <p>Digite seu nome:</p>
+      <input id="nome" type="text" placeholder="Seu nome">
+
+      <h2>Escolha um bloco</h2>
+      <div class="blocos">
+        <button class="bloco-btn" onclick="iniciarQuiz('Tecnologia')">Bloco 1 - Tecnologia</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Transporte')">Bloco 2 - Transporte</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Espaço')">Bloco 3 - Espaço</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Meio Ambiente')">Bloco 4 - Meio Ambiente</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Medicina')">Bloco 5 - Medicina</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Educação')">Bloco 6 - Educação</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Cidades do Futuro')">Bloco 7 - Cidades do Futuro</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Trabalho e Profissões')">Bloco 8 - Trabalho e Profissões</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Vida Cotidiana')">Bloco 9 - Vida Cotidiana</button>
+        <button class="bloco-btn" onclick="iniciarQuiz('Invenções Futuristas')">Bloco 10 - Invenções Futuristas</button>
+      </div>
+
+      <h2>Outros modos</h2>
+      <button class="bloco-btn" onclick="iniciarBlocoAleatorio()">Escolher bloco aleatório</button>
+
+      <p>Quantidade de perguntas aleatórias:</p>
+      <input id="quantidadeAleatoria" type="number" min="1" max="100" placeholder="Exemplo: 20">
+      <button class="bloco-btn" onclick="iniciarPerguntasAleatorias()">Começar perguntas aleatórias</button>
+    </div>
+
+
+    <div id="quiz" style="display:none;">
+      <h2 id="bloco"></h2>
+      <p id="progresso"></p>
+      <p id="tempo">Tempo: 0s</p>
+      <div class="barra">
+        <div id="progressoBarra" class="progressoBarra"></div>
+      </div>
+
+      <h3 id="pergunta"></h3>
+      <div id="alternativas"></div>
+
+      <button class="botao-proximo" onclick="proximaPergunta()">Próxima</button>
+    </div>
+
+    <div id="resultado" style="display:none;">
+      <h2>Resultado final</h2>
+      <div class="resultado-caixa">
+        <p id="textoResultado"></p>
+        <p id="mensagemResultado"></p>
+      </div>
+      <button class="botao-voltar" onclick="reiniciar()">Voltar ao início</button>
+    </div>
+  </div>
+
+<script>
+const perguntas = [
+  { bloco: "Tecnologia", pergunta: "O que é inteligência artificial?", alternativas: ["Um combustível novo", "Um tipo de veículo", "Uma tecnologia que aprende padrões", "Um planeta artificial"], correta: 2 },
+  { bloco: "Tecnologia", pergunta: "O que são robôs domésticos?", alternativas: ["Máquinas que ajudam em tarefas", "Carros sem motorista", "Prédios automáticos", "Satélites pequenos"], correta: 0 },
+  { bloco: "Tecnologia", pergunta: "O que é realidade virtual?", alternativas: ["Um jogo de cartas", "Um ambiente digital imersivo", "Um tipo de energia", "Um robô médico"], correta: 1 },
+  { bloco: "Tecnologia", pergunta: "O que pode acontecer com os computadores?", alternativas: ["Ficarão maiores", "Deixarão de existir", "Serão mais rápidos", "Perderão memória"], correta: 2 },
+  { bloco: "Tecnologia", pergunta: "O que é uma casa inteligente?", alternativas: ["Casa com biblioteca", "Casa feita de vidro", "Casa automatizada", "Casa subterrânea"], correta: 2 },
+  { bloco: "Tecnologia", pergunta: "Como a IA pode ajudar na escola?", alternativas: ["Fazendo chover", "Corrigindo e ensinando", "Apagando livros", "Fechando salas"], correta: 1 },
+  { bloco: "Tecnologia", pergunta: "O que são óculos de realidade aumentada?", alternativas: ["Óculos comuns", "Óculos de mergulho", "Óculos que mostram informações digitais", "Óculos de sol"], correta: 2 },
+  { bloco: "Tecnologia", pergunta: "Como a internet pode melhorar?", alternativas: ["Ficando mais lenta", "Tendo menos usuários", "Ficando mais rápida", "Perdendo sinal"], correta: 2 },
+  { bloco: "Tecnologia", pergunta: "O que é computação quântica?", alternativas: ["Um tipo avançado de computação", "Um carro novo", "Uma rede social", "Um satélite"], correta: 0 },
+  { bloco: "Tecnologia", pergunta: "Qual pode ser uma invenção do futuro?", alternativas: ["Máquinas de escrever modernas", "Interfaces controladas pela mente", "Telefones com fio", "Lanternas a óleo"], correta: 1 },
+
+  { bloco: "Transporte", pergunta: "Como poderão ser os carros do futuro?", alternativas: ["Mais poluentes", "Mais lentos", "Mais sustentáveis", "Mais barulhentos"], correta: 2 },
+  { bloco: "Transporte", pergunta: "O que é um carro autônomo?", alternativas: ["Um carro sem rodas", "Um carro que dirige sozinho", "Um carro sem portas", "Um carro de corrida"], correta: 1 },
+  { bloco: "Transporte", pergunta: "O que pode reduzir a poluição dos transportes?", alternativas: ["Mais fumaça", "Mais gasolina", "Energia limpa", "Mais trânsito"], correta: 2 },
+  { bloco: "Transporte", pergunta: "O que são carros voadores?", alternativas: ["Veículos que podem voar", "Aviões pequenos", "Drones de entrega", "Helicópteros comuns"], correta: 0 },
+  { bloco: "Transporte", pergunta: "Como poderão ser os trens do futuro?", alternativas: ["Mais lentos", "Mais rápidos", "Mais pesados", "Mais curtos"], correta: 1 },
+  { bloco: "Transporte", pergunta: "O que é transporte sustentável?", alternativas: ["Transporte que polui menos", "Transporte mais caro", "Transporte militar", "Transporte antigo"], correta: 0 },
+  { bloco: "Transporte", pergunta: "Como drones poderão ajudar?", alternativas: ["Fazendo estradas", "Levando entregas", "Construindo navios", "Fabricando carros"], correta: 1 },
+  { bloco: "Transporte", pergunta: "Como poderão ser os aviões?", alternativas: ["Menores e lentos", "Mais eficientes", "Sem asas", "Sem motores"], correta: 1 },
+  { bloco: "Transporte", pergunta: "O que pode diminuir congestionamentos?", alternativas: ["Mais carros", "Menos ruas", "Sistemas inteligentes", "Menos transporte público"], correta: 2 },
+  { bloco: "Transporte", pergunta: "Como poderá ser o transporte espacial?", alternativas: ["Mais acessível", "Mais lento", "Mais pesado", "Mais simples"], correta: 0 },
+
+  { bloco: "Espaço", pergunta: "Qual planeta é o principal candidato para futuras colônias?", alternativas: ["Vênus", "Marte", "Mercúrio", "Netuno"], correta: 1 },
+  { bloco: "Espaço", pergunta: "O que é uma base lunar?", alternativas: ["Cidade no oceano", "Estação na Lua", "Base militar", "Satélite artificial"], correta: 1 },
+  { bloco: "Espaço", pergunta: "O turismo espacial poderá existir?", alternativas: ["Sim", "Não", "Apenas para robôs", "Apenas para cientistas"], correta: 0 },
+  { bloco: "Espaço", pergunta: "O que são exoplanetas?", alternativas: ["Planetas fora do Sistema Solar", "Luas artificiais", "Asteroides pequenos", "Estrelas jovens"], correta: 0 },
+  { bloco: "Espaço", pergunta: "O que fazem os telescópios?", alternativas: ["Produzem energia", "Observam o espaço", "Fabricam satélites", "Criam foguetes"], correta: 1 },
+  { bloco: "Espaço", pergunta: "O que é uma galáxia?", alternativas: ["Grupo de estrelas", "Tipo de planeta", "Tipo de foguete", "Satélite natural"], correta: 0 },
+  { bloco: "Espaço", pergunta: "O que os astronautas estudam?", alternativas: ["Apenas oceanos", "Apenas animais", "O espaço e seus fenômenos", "Apenas clima"], correta: 2 },
+  { bloco: "Espaço", pergunta: "O que é a Estação Espacial Internacional?", alternativas: ["Um foguete", "Um laboratório espacial", "Um satélite de TV", "Uma nave militar"], correta: 1 },
+  { bloco: "Espaço", pergunta: "O que impulsiona foguetes?", alternativas: ["Velas", "Motores", "Hélices", "Rodas"], correta: 1 },
+  { bloco: "Espaço", pergunta: "O que a exploração espacial busca?", alternativas: ["Conhecimento científico", "Mais trânsito", "Menos tecnologia", "Menos pesquisas"], correta: 0 },
+
+  { bloco: "Meio Ambiente", pergunta: "O que é reciclagem?", alternativas: ["Jogar lixo no rio", "Queimar resíduos", "Transformar materiais usados em novos produtos", "Enterrar todo o lixo"], correta: 2 },
+  { bloco: "Meio Ambiente", pergunta: "Qual fonte de energia é renovável?", alternativas: ["Petróleo", "Carvão", "Energia solar", "Gasolina"], correta: 2 },
+  { bloco: "Meio Ambiente", pergunta: "O que ajuda a reduzir a poluição do ar?", alternativas: ["Mais fumaça", "Energia limpa", "Mais carros antigos", "Queimadas"], correta: 1 },
+  { bloco: "Meio Ambiente", pergunta: "Por que as florestas são importantes?", alternativas: ["Produzem plástico", "Aumentam a poluição", "Ajudam a manter o equilíbrio ambiental", "Diminuem o oxigênio"], correta: 2 },
+  { bloco: "Meio Ambiente", pergunta: "O que é sustentabilidade?", alternativas: ["Usar recursos sem limites", "Cuidar dos recursos para o futuro", "Construir mais fábricas", "Produzir mais lixo"], correta: 1 },
+  { bloco: "Meio Ambiente", pergunta: "Qual atitude economiza água?", alternativas: ["Deixar a torneira aberta", "Lavar a calçada com mangueira", "Fechar a torneira ao escovar os dentes", "Trocar água limpa por água suja"], correta: 2 },
+  { bloco: "Meio Ambiente", pergunta: "O que pode ajudar os oceanos?", alternativas: ["Jogar lixo no mar", "Reduzir a poluição", "Derramar óleo", "Aumentar o desperdício"], correta: 1 },
+  { bloco: "Meio Ambiente", pergunta: "O que causa mudanças climáticas?", alternativas: ["Apenas a Lua", "Apenas os oceanos", "Emissões de gases e ações humanas", "Apenas a chuva"], correta: 2 },
+  { bloco: "Meio Ambiente", pergunta: "Qual material demora muito para se decompor?", alternativas: ["Casca de fruta", "Papel", "Plástico", "Folha seca"], correta: 2 },
+  { bloco: "Meio Ambiente", pergunta: "O que podemos fazer para proteger o planeta?", alternativas: ["Poluir mais", "Desperdiçar recursos", "Reciclar e economizar recursos", "Queimar lixo sempre"], correta: 2 },
+
+  { bloco: "Medicina", pergunta: "O que é uma vacina?", alternativas: ["Um alimento", "Uma proteção contra doenças", "Um equipamento médico", "Um tipo de cirurgia"], correta: 1 },
+  { bloco: "Medicina", pergunta: "Como a IA pode ajudar médicos?", alternativas: ["Fazendo chover", "Ajudando em diagnósticos", "Construindo hospitais", "Produzindo remédios sozinha"], correta: 1 },
+  { bloco: "Medicina", pergunta: "O que são órgãos artificiais?", alternativas: ["Órgãos feitos com tecnologia", "Órgãos de animais", "Órgãos de plantas", "Órgãos invisíveis"], correta: 0 },
+  { bloco: "Medicina", pergunta: "Como robôs podem ajudar em cirurgias?", alternativas: ["Tornando procedimentos mais precisos", "Fechando hospitais", "Substituindo remédios", "Fazendo consultas online"], correta: 0 },
+  { bloco: "Medicina", pergunta: "O que é genética?", alternativas: ["Estudo dos genes", "Estudo dos planetas", "Estudo dos oceanos", "Estudo das máquinas"], correta: 0 },
+  { bloco: "Medicina", pergunta: "Como os hospitais do futuro poderão ser?", alternativas: ["Menos equipados", "Mais tecnológicos", "Sem computadores", "Sem médicos"], correta: 1 },
+  { bloco: "Medicina", pergunta: "O que aumenta a expectativa de vida?", alternativas: ["Hábitos saudáveis", "Poluição", "Falta de exercícios", "Má alimentação"], correta: 0 },
+  { bloco: "Medicina", pergunta: "O que é diagnóstico médico?", alternativas: ["Identificação de uma doença", "Construção de um hospital", "Fabricação de remédios", "Criação de vacinas"], correta: 0 },
+  { bloco: "Medicina", pergunta: "Qual tecnologia pode monitorar a saúde?", alternativas: ["Relógios inteligentes", "Lápis", "Réguas", "Lanternas"], correta: 0 },
+  { bloco: "Medicina", pergunta: "O objetivo da medicina é:", alternativas: ["Produzir máquinas", "Melhorar a saúde das pessoas", "Construir cidades", "Fabricar carros"], correta: 1 },
+
+  { bloco: "Educação", pergunta: "Como poderão ser as escolas do futuro?", alternativas: ["Sem alunos", "Mais tecnológicas", "Sem professores", "Sem salas"], correta: 1 },
+  { bloco: "Educação", pergunta: "O que são livros digitais?", alternativas: ["Livros de pedra", "Livros lidos em dispositivos eletrônicos", "Livros feitos de metal", "Livros invisíveis"], correta: 1 },
+  { bloco: "Educação", pergunta: "Como a realidade virtual pode ajudar nos estudos?", alternativas: ["Criando experiências interativas", "Apagando conteúdos", "Fechando bibliotecas", "Diminuindo o aprendizado"], correta: 0 },
+  { bloco: "Educação", pergunta: "O que é ensino online?", alternativas: ["Aula pela internet", "Aula no pátio", "Aula em navios", "Aula sem professor"], correta: 0 },
+  { bloco: "Educação", pergunta: "Como a IA pode ajudar os alunos?", alternativas: ["Impedindo perguntas", "Ajudando nos estudos", "Fechando escolas", "Substituindo cadernos por pedras"], correta: 1 },
+  { bloco: "Educação", pergunta: "O que é aprendizagem personalizada?", alternativas: ["Ensino igual para todos", "Ensino adaptado ao aluno", "Ensino sem atividades", "Ensino sem metas"], correta: 1 },
+  { bloco: "Educação", pergunta: "Qual tecnologia pode ser usada em laboratórios virtuais?", alternativas: ["Realidade virtual", "Papelão", "Giz colorido", "Ampulheta"], correta: 0 },
+  { bloco: "Educação", pergunta: "Como aprender idiomas poderá ficar mais fácil?", alternativas: ["Com menos prática", "Com tradutores e aplicativos inteligentes", "Sem estudar", "Sem ouvir o idioma"], correta: 1 },
+  { bloco: "Educação", pergunta: "O que será importante aprender no futuro?", alternativas: ["Apenas decorar textos", "Resolver problemas e usar tecnologia", "Evitar computadores", "Ignorar mudanças"], correta: 1 },
+  { bloco: "Educação", pergunta: "Qual é um objetivo da educação?", alternativas: ["Impedir descobertas", "Desenvolver conhecimentos e habilidades", "Diminuir a criatividade", "Evitar aprendizado"], correta: 1 },
+
+  { bloco: "Cidades do Futuro", pergunta: "O que é uma cidade inteligente?", alternativas: ["Cidade que usa tecnologia para melhorar serviços", "Cidade sem energia", "Cidade sem moradores", "Cidade sem transporte"], correta: 0 },
+  { bloco: "Cidades do Futuro", pergunta: "Como a energia poderá ser usada nas cidades do futuro?", alternativas: ["Apenas carvão", "Apenas petróleo", "Mais fontes renováveis", "Sem eletricidade"], correta: 2 },
+  { bloco: "Cidades do Futuro", pergunta: "O que pode ajudar a reduzir o trânsito?", alternativas: ["Mais congestionamentos", "Sistemas inteligentes de transporte", "Menos ruas organizadas", "Mais semáforos quebrados"], correta: 1 },
+  { bloco: "Cidades do Futuro", pergunta: "Como poderão ser os prédios do futuro?", alternativas: ["Menos seguros", "Mais sustentáveis", "Sem janelas", "Sem iluminação"], correta: 1 },
+  { bloco: "Cidades do Futuro", pergunta: "O que é iluminação inteligente?", alternativas: ["Luz controlada por tecnologia", "Luz de velas", "Luz sem energia", "Luz apenas colorida"], correta: 0 },
+  { bloco: "Cidades do Futuro", pergunta: "Como a coleta de lixo poderá melhorar?", alternativas: ["Com menos organização", "Com sistemas automatizados", "Com mais desperdício", "Com menos reciclagem"], correta: 1 },
+  { bloco: "Cidades do Futuro", pergunta: "O que ajuda a melhorar a qualidade do ar?", alternativas: ["Mais poluição", "Mais áreas verdes", "Mais queimadas", "Mais fumaça"], correta: 1 },
+  { bloco: "Cidades do Futuro", pergunta: "Como a tecnologia pode aumentar a segurança?", alternativas: ["Com monitoramento inteligente", "Apagando informações", "Desligando comunicações", "Retirando iluminação"], correta: 0 },
+  { bloco: "Cidades do Futuro", pergunta: "O que são áreas verdes urbanas?", alternativas: ["Espaços com vegetação nas cidades", "Estacionamentos grandes", "Ruas asfaltadas", "Centros comerciais"], correta: 0 },
+  { bloco: "Cidades do Futuro", pergunta: "Qual é um objetivo das cidades do futuro?", alternativas: ["Aumentar desperdícios", "Melhorar a qualidade de vida", "Reduzir a mobilidade", "Diminuir a sustentabilidade"], correta: 1 },
+
+  { bloco: "Trabalho e Profissões", pergunta: "Qual área deve crescer muito no futuro?", alternativas: ["Agricultura manual", "Tecnologia e inovação", "Transporte por cavalos", "Fabricação de fitas cassete"], correta: 1 },
+  { bloco: "Trabalho e Profissões", pergunta: "Como a inteligência artificial pode ajudar no trabalho?", alternativas: ["Automatizando tarefas repetitivas", "Fechando empresas", "Eliminando computadores", "Apagando dados"], correta: 0 },
+  { bloco: "Trabalho e Profissões", pergunta: "O que é trabalho remoto?", alternativas: ["Trabalho em outro país", "Trabalho sem salário", "Trabalho realizado à distância", "Trabalho temporário"], correta: 2 },
+  { bloco: "Trabalho e Profissões", pergunta: "Qual habilidade será importante no futuro?", alternativas: ["Evitar mudanças", "Resolver problemas e aprender continuamente", "Ignorar tecnologia", "Decorar tudo sem compreender"], correta: 1 },
+  { bloco: "Trabalho e Profissões", pergunta: "O que é programação?", alternativas: ["Construção de casas", "Criação de máquinas agrícolas", "Desenvolvimento de instruções para computadores", "Fabricação de ferramentas"], correta: 2 },
+  { bloco: "Trabalho e Profissões", pergunta: "Qual profissão pode crescer com a exploração espacial?", alternativas: ["Engenheiro espacial", "Ferreiro medieval", "Carteiro a cavalo", "Acendedor de lampiões"], correta: 0 },
+  { bloco: "Trabalho e Profissões", pergunta: "O que é biotecnologia?", alternativas: ["Estudo dos planetas", "Aplicação da tecnologia em seres vivos", "Construção de estradas", "Produção de móveis"], correta: 1 },
+  { bloco: "Trabalho e Profissões", pergunta: "Por que a segurança digital é importante?", alternativas: ["Para aumentar vírus", "Para diminuir a internet", "Para proteger informações e sistemas", "Para desligar computadores"], correta: 2 },
+  { bloco: "Trabalho e Profissões", pergunta: "O que significa atualização profissional?", alternativas: ["Aprender novas competências ao longo da vida", "Trocar de cidade", "Comprar equipamentos novos", "Mudar de profissão todo ano"], correta: 0 },
+  { bloco: "Trabalho e Profissões", pergunta: "Como poderá ser o mercado de trabalho do futuro?", alternativas: ["Menos tecnológico", "Sem inovação", "Mais dependente de papel", "Mais conectado e tecnológico"], correta: 3 },
+
+  { bloco: "Vida Cotidiana", pergunta: "Como poderão ser as casas do futuro?", alternativas: ["Sem energia elétrica", "Mais inteligentes e automatizadas", "Sem internet", "Menores obrigatoriamente"], correta: 1 },
+  { bloco: "Vida Cotidiana", pergunta: "Como faremos compras no futuro?", alternativas: ["Apenas em lojas físicas", "Apenas por telefone", "Com tecnologias digitais mais avançadas", "Apenas por cartas"], correta: 2 },
+  { bloco: "Vida Cotidiana", pergunta: "Como a alimentação poderá mudar?", alternativas: ["Com alimentos mais sustentáveis e tecnológicos", "Sem frutas e verduras", "Apenas com alimentos industrializados", "Sem inovação"], correta: 0 },
+  { bloco: "Vida Cotidiana", pergunta: "O que um eletrodoméstico inteligente pode fazer?", alternativas: ["Produzir combustível", "Automatizar tarefas domésticas", "Construir casas", "Voar sozinho"], correta: 1 },
+  { bloco: "Vida Cotidiana", pergunta: "Como a comunicação poderá evoluir?", alternativas: ["Ficando mais lenta", "Voltando ao correio tradicional", "Sem imagens e vídeos", "Ficando mais rápida e integrada"], correta: 3 },
+  { bloco: "Vida Cotidiana", pergunta: "Como poderão ser os jogos do futuro?", alternativas: ["Apenas de tabuleiro", "Mais imersivos e interativos", "Sem gráficos", "Sem som"], correta: 1 },
+  { bloco: "Vida Cotidiana", pergunta: "O que pode melhorar a segurança doméstica?", alternativas: ["Menos iluminação", "Portas abertas", "Sistemas inteligentes de monitoramento", "Ausência de alarmes"], correta: 2 },
+  { bloco: "Vida Cotidiana", pergunta: "Como a energia poderá ser usada nas casas?", alternativas: ["De forma mais eficiente e sustentável", "Com mais desperdício", "Apenas com carvão", "Sem planejamento"], correta: 0 },
+  { bloco: "Vida Cotidiana", pergunta: "Como a tecnologia pode ajudar as famílias?", alternativas: ["Dificultando tarefas", "Facilitando atividades do dia a dia", "Impedindo comunicação", "Aumentando desperdícios"], correta: 1 },
+  { bloco: "Vida Cotidiana", pergunta: "Como poderá ser um dia comum no futuro?", alternativas: ["Sem transporte", "Sem eletricidade", "Mais conectado à tecnologia", "Igual ao século passado"], correta: 2 },
+
+  { bloco: "Invenções Futuristas", pergunta: "O que é teletransporte?", alternativas: ["Viajar por navio", "Mover-se instantaneamente de um lugar para outro", "Viajar de bicicleta", "Viajar por trem"], correta: 1 },
+  { bloco: "Invenções Futuristas", pergunta: "Como poderão ser os robôs domésticos do futuro?", alternativas: ["Apenas decorativos", "Sem utilidade", "Capazes de ajudar em várias tarefas", "Feitos apenas para brincar"], correta: 2 },
+  { bloco: "Invenções Futuristas", pergunta: "O que são roupas inteligentes?", alternativas: ["Roupas feitas de papel", "Roupas sem tecido", "Roupas usadas por cientistas", "Roupas com tecnologia integrada"], correta: 3 },
+  { bloco: "Invenções Futuristas", pergunta: "O que a impressão 3D poderá fabricar no futuro?", alternativas: ["Apenas brinquedos", "Apenas livros", "Objetos complexos e até partes de construções", "Apenas roupas"], correta: 2 },
+  { bloco: "Invenções Futuristas", pergunta: "O que significa controlar um aparelho com a mente?", alternativas: ["Usar sinais do cérebro para dar comandos", "Falar com o aparelho", "Apertar botões", "Usar controle remoto"], correta: 0 },
+  { bloco: "Invenções Futuristas", pergunta: "Como poderiam ser as cidades submarinas?", alternativas: ["Construídas de madeira", "Localizadas sob a água", "Sem moradores", "Sem energia"], correta: 1 },
+  { bloco: "Invenções Futuristas", pergunta: "O que são casas flutuantes?", alternativas: ["Casas construídas em árvores", "Casas subterrâneas", "Casas projetadas para permanecer sobre a água", "Casas sem fundação"], correta: 2 },
+  { bloco: "Invenções Futuristas", pergunta: "Como poderão ser os veículos totalmente automáticos?", alternativas: ["Precisarão de motorista o tempo todo", "Não terão rodas", "Não terão motor", "Poderão funcionar sem intervenção humana constante"], correta: 3 },
+  { bloco: "Invenções Futuristas", pergunta: "Qual invenção poderia transformar mais a vida das pessoas?", alternativas: ["Tecnologia de energia limpa e abundante", "Um lápis maior", "Um caderno infinito", "Uma régua eletrônica"], correta: 0 },
+  { bloco: "Invenções Futuristas", pergunta: "Como você imagina o futuro da humanidade?", alternativas: ["Sem tecnologia", "Igual ao passado", "Com menos conhecimento", "Com avanços científicos e novos desafios"], correta: 3 }
+];
+
+let indice = 0;
+let pontos = 0;
+let nomeJogador = "";
+let perguntasDoBloco = [];
+let inicioTempo = 0;
+let intervaloTempo = null;
+let blocoAtual = "";
+
+function formatarTempo(segundos) {
+  const minutos = Math.floor(segundos / 60);
+  const resto = segundos % 60;
+
+  if (minutos === 0) {
+    return resto + "s";
+  }
+
+  return minutos + "min " + resto + "s";
+}
+
+function atualizarTempo() {
+  const agora = Date.now();
+  const segundos = Math.floor((agora - inicioTempo) / 1000);
+  document.getElementById("tempo").innerText = "Tempo: " + formatarTempo(segundos);
+}
+
+function embaralhar(lista) {
+  const copia = [...lista];
+
+  for (let i = copia.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = copia[i];
+    copia[i] = copia[j];
+    copia[j] = temp;
+  }
+
+  return copia;
+}
+
+function iniciarBlocoAleatorio() {
+  const blocos = [...new Set(perguntas.map(q => q.bloco))];
+  const blocoSorteado = blocos[Math.floor(Math.random() * blocos.length)];
+  iniciarQuiz(blocoSorteado);
+}
+
+function iniciarPerguntasAleatorias() {
+  nomeJogador = document.getElementById("nome").value.trim();
+  if (nomeJogador === "") {
+    alert("Digite seu nome para começar o quiz.");
+    return;
+  }
+
+  let quantidade = Number(document.getElementById("quantidadeAleatoria").value);
+
+  if (!quantidade || quantidade < 1) {
+    alert("Digite uma quantidade válida de perguntas.");
+    return;
+  }
+
+  if (quantidade > perguntas.length) {
+    quantidade = perguntas.length;
+  }
+
+  blocoAtual = "Perguntas aleatórias";
+  perguntasDoBloco = embaralhar(perguntas).slice(0, quantidade);
+
+  indice = 0;
+  pontos = 0;
+
+  inicioTempo = Date.now();
+  clearInterval(intervaloTempo);
+  intervaloTempo = setInterval(atualizarTempo, 1000);
+  atualizarTempo();
+
+  document.getElementById("inicio").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  mostrarPergunta();
+}
+
+function iniciarQuiz(blocoEscolhido) {
+  nomeJogador = document.getElementById("nome").value.trim();
+  if (nomeJogador === "") {
+    alert("Digite seu nome para começar o quiz.");
+    return;
+  }
+
+  blocoAtual = blocoEscolhido;
+  perguntasDoBloco = perguntas.filter(q => q.bloco === blocoEscolhido);
+
+  indice = 0;
+  pontos = 0;
+
+  inicioTempo = Date.now();
+  clearInterval(intervaloTempo);
+  intervaloTempo = setInterval(atualizarTempo, 1000);
+  atualizarTempo();
+
+  document.getElementById("inicio").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  mostrarPergunta();
+}
+
+function mostrarPergunta() {
+  const q = perguntasDoBloco[indice];
+
+  if (blocoAtual === "Perguntas aleatórias") {
+    document.getElementById("bloco").innerText = "Modo: Perguntas aleatórias | Tema: " + q.bloco;
+  } else {
+    document.getElementById("bloco").innerText = "Bloco: " + q.bloco;
+  }
+  document.getElementById("progresso").innerText = "Pergunta " + (indice + 1) + " de " + perguntasDoBloco.length;
+  document.getElementById("pergunta").innerText = q.pergunta;
+
+  const porcentagem = ((indice) / perguntasDoBloco.length) * 100;
+  document.getElementById("progressoBarra").style.width = porcentagem + "%";
+
+  const div = document.getElementById("alternativas");
+  div.innerHTML = "";
+
+  for (let i = 0; i < q.alternativas.length; i++) {
+    div.innerHTML += `
+      <label class="alternativa">
+        <input type="radio" name="resposta" value="${i}">
+        ${String.fromCharCode(65 + i)}) ${q.alternativas[i]}
+      </label>
+    `;
+  }
+}
+
+function proximaPergunta() {
+  const marcada = document.querySelector('input[name="resposta"]:checked');
+
+  if (!marcada) {
+    alert("Escolha uma alternativa antes de continuar.");
+    return;
+  }
+
+  const resposta = Number(marcada.value);
+
+  if (resposta === perguntasDoBloco[indice].correta) {
+    pontos++;
+  }
+
+  indice++;
+
+  if (indice < perguntasDoBloco.length) {
+    mostrarPergunta();
+  } else {
+    mostrarResultado();
+  }
+}
+
+function mostrarResultado() {
+  clearInterval(intervaloTempo);
+  const tempoFinal = Math.floor((Date.now() - inicioTempo) / 1000);
+
+  document.getElementById("quiz").style.display = "none";
+  document.getElementById("resultado").style.display = "block";
+  document.getElementById("progressoBarra").style.width = "100%";
+
+  salvarResultado(nomeJogador, blocoAtual, pontos, perguntasDoBloco.length, tempoFinal);
+
+  let mensagem = "";
+  if (pontos >= 9) {
+    mensagem = "Excelente!";
+  } else if (pontos >= 6) {
+    mensagem = "Muito bom!";
+  } else {
+    mensagem = "Continue praticando!";
+  }
+
+  document.getElementById("textoResultado").innerText =
+    nomeJogador + ", você acertou " + pontos + " de " + perguntasDoBloco.length +
+    " perguntas. Tempo total: " + formatarTempo(tempoFinal) + ".";
+
+  document.getElementById("mensagemResultado").innerText = mensagem;
+}
+
+
+function salvarResultado(nome, bloco, acertos, total, tempoSegundos) {
+  const resultados = JSON.parse(localStorage.getItem("resultadosQuizFuturo") || "[]");
+
+  const agora = new Date();
+  const horario = agora.toLocaleString("pt-BR");
+
+  resultados.push({
+    nome: nome,
+    horario: horario,
+    bloco: bloco,
+    acertos: acertos,
+    total: total,
+    tempo: formatarTempo(tempoSegundos)
+  });
+
+  localStorage.setItem("resultadosQuizFuturo", JSON.stringify(resultados));
+}
+
+
+function reiniciar() {
+  clearInterval(intervaloTempo);
+  indice = 0;
+  pontos = 0;
+  perguntasDoBloco = [];
+  document.getElementById("resultado").style.display = "none";
+  document.getElementById("inicio").style.display = "block";
+}
+
+
+
+
+</script>
+</body>
+</html>
